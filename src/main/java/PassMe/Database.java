@@ -28,9 +28,6 @@ class Database implements Serializable {
         return md.digest();
     }
 
-
-
-
     // inner classes
 
     static class Item implements Serializable {
