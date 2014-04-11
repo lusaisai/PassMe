@@ -65,7 +65,7 @@ public class Manager {
     }
 
     public void showItem(Database.Item item) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
-        System.out.println(String.format("%-20s\t%-20s\t%-30s\t%-30s\t%-30s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), item.cre, item.exp));
+        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-30s\t%-30s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), item.cre, item.exp));
     }
 
     public void showAllItem() throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
@@ -74,7 +74,7 @@ public class Manager {
     }
 
     private void printHead(){
-        System.out.println(String.format("%-20s\t%-20s\t%-30s\t%-30s\t%-30s", "Host", "User", "Password", "Cre", "exp"));
+        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-30s\t%-30s", "Host", "User", "Password", "Creation Date", "Expiration Date"));
         System.out.println("==================================================================================================================================");
     }
 
