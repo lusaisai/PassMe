@@ -47,6 +47,4 @@ class Password {
         return new SecretKeySpec(md.digest(), 0, 16, "AES");
     }
 
-
-
 }

@@ -4,6 +4,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.util.ArrayList;
+
 /**
  * Unit test for simple App.
  */
@@ -67,4 +69,12 @@ public class AppTest
         m.searchItem("notFound");
     }
 
+    public void testDatabase() throws Exception {
+        Database db = new Database( "1", new ArrayList<Database.Item>());
+        db.auth("1");
+        try {
+            db.auth("2");
+        } catch (Database.AuthFailureException e) {
+        }
+    }
 }

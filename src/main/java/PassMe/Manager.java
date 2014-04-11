@@ -8,51 +8,24 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Manager {
-    private final String dataDir;
     private final String dataFile;
     private final String passPhrase;
-    private List<Item> data;
+    private Database db;
 
-    private static class Item implements Serializable {
-        final String host;
-        final String user;
-        final Date cre;
-        final byte[] password;
-        Date exp;
-
-        Item(String host, String user, byte[] password) {
-            this.host = host;
-            this.user = user;
-            this.password = password;
-            this.cre = new Date();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!( obj instanceof Item )) return false;
-            Item item = (Item)obj;
-            return item.host.equals(host) && item.user.equals(user);
-        }
-
-        @Override
-        public int hashCode() {
-            return user.hashCode() + host.hashCode();
-        }
-    }
-
-    public Manager(String passPhrase) throws IOException, ClassNotFoundException {
+    public Manager(String passPhrase) throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
         this.passPhrase = passPhrase;
-        this.dataDir = System.getProperty("user.home") + "/.passme";
-        this.dataFile = this.dataDir + "/data.pm";
+        String dataDir = System.getProperty("user.home") + "/.passme";
+        this.dataFile = dataDir + "/data.pm";
         File f = new File( this.dataFile );
         if ( f.exists() ) {
+            System.out.println("Reading data from " + f.getPath());
             readData();
+            this.db.auth(passPhrase);
         } else {
             try {
-                File dir = new File(this.dataDir);
+                File dir = new File(dataDir);
                 if ( !dir.exists() ) {
                     if ( ! dir.mkdirs() ) throw new IOException();
                 }
@@ -62,17 +35,18 @@ public class Manager {
                 e.printStackTrace();
                 System.exit(1);
             }
-            this.data = new ArrayList<Item>();
+            this.db = new Database(passPhrase, new ArrayList<Database.Item>());
+            System.out.println("Saving data into " + f.getPath());
             saveData();
         }
     }
 
     public void newItem(String host, String user, String password) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IOException {
-        Item newItem = new Item( host, user, Password.encrypt(this.passPhrase, password) );
-        for ( Item item: this.data ) {
+        Database.Item newItem = new Database.Item( host, user, Password.encrypt(this.passPhrase, password) );
+        for ( Database.Item item: this.db.items ) {
             if ( item.equals(newItem) && item.exp == null ) item.exp = new Date();
         }
-        this.data.add(newItem);
+        this.db.items.add(newItem);
         saveData();
         printHead();
         showItem(newItem);
@@ -85,18 +59,18 @@ public class Manager {
 
     public void searchItem(String host) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         printHead();
-        for ( Item item: this.data ) {
+        for ( Database.Item item: this.db.items ) {
             if ( item.host.contains(host) && item.exp == null ) showItem(item);
         }
     }
 
-    public void showItem(Item item) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
+    public void showItem(Database.Item item) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
         System.out.println(String.format("%-20s\t%-20s\t%-30s\t%-30s\t%-30s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), item.cre, item.exp));
     }
 
     public void showAllItem() throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         printHead();
-        for(Item item: this.data) showItem(item);
+        for(Database.Item item: this.db.items) showItem(item);
     }
 
     private void printHead(){
@@ -107,13 +81,13 @@ public class Manager {
 
     private void readData() throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream( this.dataFile ));
-        this.data = (List<Item>) ois.readObject();
+        this.db = (Database) ois.readObject();
         ois.close();
     }
 
     private void saveData() throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.dataFile ));
-        oos.writeObject(this.data);
+        oos.writeObject(this.db);
         oos.close();
     }
 
