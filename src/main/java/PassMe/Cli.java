@@ -8,10 +8,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
+import jline.console.ConsoleReader;
+import jline.console.completer.StringsCompleter;
 
 
 public class Cli {
     private Manager manager;
+
 
     public Cli(String passPhrase) {
         try {
@@ -32,15 +37,16 @@ public class Cli {
         System.out.println("new    <host> <user> [password]");
         System.out.println("search <host>");
         System.out.println("Enter exit to exit");
+        System.out.println("For commands not recognized, it will treat it as a host and search it");
     }
 
     public void waitForCommand() {
         help();
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            ConsoleReader cr = new ConsoleReader();
+            cr.addCompleter(new StringsCompleter("help", "all", "new", "search", "exit"));
             while (true) {
-                System.out.print("> ");
-                String command = br.readLine().trim();
+                String command = cr.readLine("> ").trim();
                 if ( command.equals("") ) continue;
 
                 if ( command.equals("help") ) {
@@ -68,7 +74,7 @@ public class Cli {
                 } else if ( command.equals("exit") ) {
                     break;
                 } else {
-                    System.out.println("Command not recognized");
+                    manager.searchItem(command);
                 }
             }
         } catch (IOException e) {
