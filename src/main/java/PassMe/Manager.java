@@ -15,8 +15,11 @@ public class Manager {
     private Database db;
 
     public Manager(String passPhrase) throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
+        this(passPhrase, System.getProperty("user.home") + "/.passme");
+    }
+
+    public Manager(String passPhrase, String dataDir) throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
         this.passPhrase = passPhrase;
-        String dataDir = System.getProperty("user.home") + "/.passme";
         this.dataFile = dataDir + "/data.pm";
         File f = new File( this.dataFile );
         if ( f.exists() ) {

@@ -55,7 +55,7 @@ public class AppTest
     }
 
     public void testManagerNew() throws Exception {
-        Manager m = new Manager("1");
+        Manager m = new Manager("1", "/tmp/passme");
         m.newItem("google", "google");
         m.newItem("baidu", "baidu");
         m.newItem("distrowatch", "distrowatch", "distrowatch");
@@ -63,7 +63,7 @@ public class AppTest
     }
 
     public void testManagerSearch() throws Exception {
-        Manager m = new Manager("1");
+        Manager m = new Manager("1", "/tmp/passme");
         m.searchItem("baidu");
         m.searchItem("google");
         m.searchItem("notFound");
