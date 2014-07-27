@@ -41,7 +41,12 @@ public class Cli {
             cr.setExpandEvents(false);
             cr.addCompleter(new StringsCompleter("help", "all", "new", "search", "dump", "exit"));
             while (true) {
-                String command = cr.readLine("> ").trim();
+                String command = cr.readLine("> ");
+                if ( command == null ) {
+                    System.out.println();
+                    break;
+                }
+                command = command.trim();
                 if ( command.equals("") ) continue;
 
                 if ( command.equals("help") ) {
