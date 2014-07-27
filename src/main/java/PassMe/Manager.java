@@ -79,7 +79,7 @@ public class Manager {
 
 
     public void showItem(Database.Item item) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
-        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-20s\t%-20s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), this.dateFormat(item.cre), this.dateFormat(item.exp)));
+        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-20s\t%-20s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), dateFormat(item.cre), dateFormat(item.exp)));
     }
 
     public void showAllItem() throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
@@ -95,7 +95,7 @@ public class Manager {
     public void dump() throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
         for ( Database.Item item: this.db.items ) {
             if ( item.exp == null ) {
-                System.out.println("new " + item.host + " " + item.user + " " + new String(Password.decrypt(this.passPhrase, item.password)));
+                System.out.println("new " + item.host + " " + item.user + " " + Password.decrypt(this.passPhrase, item.password));
             }
         }
     }

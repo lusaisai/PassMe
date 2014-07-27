@@ -1,17 +1,14 @@
 package PassMe;
 
+import jline.console.ConsoleReader;
+import jline.console.completer.StringsCompleter;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-
-import jline.console.ConsoleReader;
-import jline.console.completer.StringsCompleter;
 
 
 public class Cli {
@@ -21,11 +18,7 @@ public class Cli {
     public Cli(String passPhrase) {
         try {
             this.manager = new Manager(passPhrase);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (IOException | ClassNotFoundException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
@@ -41,7 +34,7 @@ public class Cli {
         System.out.println("For commands not recognized, it will be treated as a host and search it");
     }
 
-    public void waitForCommand() {
+    public void waitForCommand() throws Exception {
         help();
         try {
             ConsoleReader cr = new ConsoleReader();
@@ -81,21 +74,8 @@ public class Cli {
                     manager.searchItem(command);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | NoSuchPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("Exit");
         }
     }
 }

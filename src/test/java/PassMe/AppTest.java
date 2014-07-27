@@ -79,7 +79,7 @@ public class AppTest
         db.auth("1");
         try {
             db.auth("2");
-        } catch (Database.AuthFailureException e) {
+        } catch (Database.AuthFailureException ignored) {
         }
     }
 }

@@ -3,8 +3,7 @@ package PassMe;
 
 public class App
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) throws Exception {
         if ( args.length < 1 ) {
             System.out.println("Usage: java -jar PassMe-1.0-SNAPSHOT.jar <passPhrase>");
             System.exit(1);
