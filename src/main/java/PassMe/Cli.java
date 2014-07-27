@@ -36,15 +36,17 @@ public class Cli {
         System.out.println("all    show all items");
         System.out.println("new    <host> <user> [password]");
         System.out.println("search <host>");
+        System.out.println("dump dump the commands which can regenerate the data");
         System.out.println("Enter exit to exit");
-        System.out.println("For commands not recognized, it will treat it as a host and search it");
+        System.out.println("For commands not recognized, it will be treated as a host and search it");
     }
 
     public void waitForCommand() {
         help();
         try {
             ConsoleReader cr = new ConsoleReader();
-            cr.addCompleter(new StringsCompleter("help", "all", "new", "search", "exit"));
+            cr.setExpandEvents(false);
+            cr.addCompleter(new StringsCompleter("help", "all", "new", "search", "dump", "exit"));
             while (true) {
                 String command = cr.readLine("> ").trim();
                 if ( command.equals("") ) continue;
@@ -71,6 +73,8 @@ public class Cli {
                         System.out.println("Missing arguments");
                         System.out.println("search <host>");
                     }
+                } else if ( command.equals("dump") ) {
+                    manager.dump();
                 } else if ( command.equals("exit") ) {
                     break;
                 } else {
@@ -90,6 +94,7 @@ public class Cli {
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Exit");
         }
     }

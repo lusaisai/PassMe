@@ -6,6 +6,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -67,8 +68,18 @@ public class Manager {
         }
     }
 
+    private static String dateFormat(Date d) {
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if ( d != null ) {
+            return sd.format(d);
+        } else {
+            return "";
+        }
+    }
+
+
     public void showItem(Database.Item item) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
-        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-30s\t%-30s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), item.cre, item.exp));
+        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-20s\t%-20s", item.host, item.user, Password.decrypt(this.passPhrase, item.password), this.dateFormat(item.cre), this.dateFormat(item.exp)));
     }
 
     public void showAllItem() throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
@@ -77,8 +88,16 @@ public class Manager {
     }
 
     private void printHead(){
-        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-30s\t%-30s", "Host", "User", "Password", "Creation Date", "Expiration Date"));
-        System.out.println("==================================================================================================================================");
+        System.out.println(String.format("%-20s\t%-20s\t%-20s\t%-20s\t%-20s", "Host", "User", "Password", "Creation Date", "Expiration Date"));
+        System.out.println("=====================================================================================================================");
+    }
+
+    public void dump() throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException {
+        for ( Database.Item item: this.db.items ) {
+            if ( item.exp == null ) {
+                System.out.println("new " + item.host + " " + item.user + " " + new String(Password.decrypt(this.passPhrase, item.password)));
+            }
+        }
     }
 
 

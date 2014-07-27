@@ -69,6 +69,11 @@ public class AppTest
         m.searchItem("notFound");
     }
 
+    public void testDump() throws Exception {
+        Manager m = new Manager("1", "/tmp/passme");
+        m.dump();
+    }
+
     public void testDatabase() throws Exception {
         Database db = new Database( "1", new ArrayList<Database.Item>());
         db.auth("1");
